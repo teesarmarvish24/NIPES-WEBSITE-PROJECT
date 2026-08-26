@@ -1,12 +1,11 @@
 # AMSO Website
 
-Official website for the **Association of Mathematical Sciences and Optimization (AMSO)**,
-built following the pattern of professional/research-body sites like NIPES.
+Official website for the **Association of Mathematical Sciences and Optimization (AMSO)**.
 
 AMSO grew out of the Mathematical Analysis and Optimization Research Group (MANORG) in the
 Department of Mathematics, University of Lagos, and now works with its sister group MAARG,
 the National Mathematical Centre (Abuja), and IMSP (Benin Republic) to run the annual
-ICAPTA / ICMSO international conference series and the IJMAO journal.
+ICAPTA / ICMSO international conference series and the IJMSOTA journal.
 
 ## Structure
 
@@ -16,7 +15,7 @@ Static site, no build step required.
 index.html         Home
 about.html          Mission, history, leadership, affiliates
 conferences.html    Full ICAPTA/ICMSO conference archive (2016–2023)
-journal.html        IJMAO journal overview & submission guidelines
+journal.html        IJMSOTA journal overview & submission guidelines
 membership.html     Benefits, registration fees, how to join
 contact.html        Secretariat contacts, message form, address
 assets/css/         Shared stylesheet
