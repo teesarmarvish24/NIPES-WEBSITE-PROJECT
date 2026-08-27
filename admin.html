@@ -3,13 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Manuscript Review | AMSO</title>
+<title>Site Admin | AMSO</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230a2540%22/><text x=%2250%22 y=%2268%22 font-size=%2258%22 text-anchor=%22middle%22 fill=%22%23c9972c%22 font-family=%22Georgia,serif%22>&#8721;</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .tabbar { display: flex; gap: 8px; margin-bottom: 24px; }
+  .tabbar button {
+    padding: 9px 18px; border-radius: 999px; border: 1.5px solid var(--line);
+    background: var(--paper); font-family: var(--font-body); font-weight: 600;
+    font-size: 0.88rem; cursor: pointer; color: var(--ink-soft);
+  }
+  .tabbar button.active { background: var(--navy-900); color: #fff; border-color: var(--navy-900); }
+  .tabpane { display: none; }
+  .tabpane.active { display: block; }
+</style>
 </head>
 <body>
 
@@ -19,15 +30,15 @@
       <span class="brand-mark">&Sigma;</span>
       <span class="brand-text"><strong>AMSO</strong><span>Mathematical Sciences &amp; Optimization</span></span>
     </a>
-    <span style="color:#c7d6e8;font-size:0.85rem;">Manuscript Review (secretariat only)</span>
+    <span style="color:#c7d6e8;font-size:0.85rem;">Site Admin (secretariat only)</span>
   </div>
 </header>
 
 <section class="page-hero">
   <div class="container">
     <span class="eyebrow">Secretariat</span>
-    <h1>Manuscript Review Queue</h1>
-    <p>Enter the admin token to view and moderate submissions. This page is not linked from the public site.</p>
+    <h1>Site Admin</h1>
+    <p>Enter the admin token to manage manuscript submissions and the conference archive. This page is not linked from the public site.</p>
   </div>
 </section>
 
@@ -42,7 +53,64 @@
       <p id="auth-status" class="mb-0" style="font-size:0.85rem;margin-top:8px;"></p>
     </div>
 
-    <div id="queue"></div>
+    <div class="tabbar">
+      <button type="button" class="tab-btn active" data-tab="manuscripts">Manuscripts</button>
+      <button type="button" class="tab-btn" data-tab="conferences">Conferences</button>
+    </div>
+
+    <div id="tab-manuscripts" class="tabpane active">
+      <div id="manuscript-queue"></div>
+    </div>
+
+    <div id="tab-conferences" class="tabpane">
+      <div class="card" style="margin-bottom:24px;">
+        <h3 class="mt-0" id="conf-form-title">Add a Conference</h3>
+        <form id="conf-form" style="display:flex;flex-direction:column;gap:12px;">
+          <input type="hidden" id="conf-id" value="">
+          <div>
+            <label class="field-label">Edition label (e.g. "ICMSO 2024 · 11th Annual")</label>
+            <input type="text" id="conf-edition" class="field-input" required>
+          </div>
+          <div>
+            <label class="field-label">Theme / title</label>
+            <input type="text" id="conf-title" class="field-input" required>
+          </div>
+          <div class="grid grid-2" style="gap:12px;">
+            <div>
+              <label class="field-label">Start date (free text)</label>
+              <input type="text" id="conf-start" class="field-input" placeholder="e.g. 12 March 2024">
+            </div>
+            <div>
+              <label class="field-label">End date (free text)</label>
+              <input type="text" id="conf-end" class="field-input" placeholder="e.g. 18 March 2024">
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Venue</label>
+            <input type="text" id="conf-venue" class="field-input">
+          </div>
+          <div>
+            <label class="field-label">Description</label>
+            <textarea id="conf-description" rows="4" class="field-input" style="resize:vertical;"></textarea>
+          </div>
+          <div>
+            <label class="field-label">Image URL (optional, e.g. assets/img/your-flyer.jpg)</label>
+            <input type="text" id="conf-image" class="field-input">
+          </div>
+          <div>
+            <label class="field-label">Sort priority (higher number = shown first / as "latest")</label>
+            <input type="number" id="conf-sort" class="field-input" value="0">
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button type="submit" class="btn btn-primary btn-sm" id="conf-submit-btn">Add Conference</button>
+            <button type="button" class="btn btn-outline btn-sm" id="conf-cancel-btn" style="display:none;">Cancel Edit</button>
+          </div>
+          <p id="conf-form-status" class="mb-0" style="font-size:0.85rem;"></p>
+        </form>
+      </div>
+
+      <div id="conference-list"></div>
+    </div>
   </div>
 </section>
 
@@ -51,19 +119,41 @@
   var tokenInput = document.getElementById("token-input");
   var loadBtn = document.getElementById("load-btn");
   var authStatus = document.getElementById("auth-status");
-  var queueEl = document.getElementById("queue");
+  var manuscriptQueueEl = document.getElementById("manuscript-queue");
+  var conferenceListEl = document.getElementById("conference-list");
+
+  var tabButtons = document.querySelectorAll(".tab-btn");
+  tabButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      tabButtons.forEach(function (b) { b.classList.remove("active"); });
+      document.querySelectorAll(".tabpane").forEach(function (p) { p.classList.remove("active"); });
+      btn.classList.add("active");
+      document.getElementById("tab-" + btn.getAttribute("data-tab")).classList.add("active");
+    });
+  });
 
   var saved = sessionStorage.getItem("amso_admin_token");
-  if (saved) { tokenInput.value = saved; load(); }
+  if (saved) { tokenInput.value = saved; loadAll(); }
+  loadBtn.addEventListener("click", loadAll);
 
-  loadBtn.addEventListener("click", load);
-
-  function load() {
+  function loadAll() {
     var token = tokenInput.value.trim();
     if (!token) return;
     sessionStorage.setItem("amso_admin_token", token);
     authStatus.textContent = "Loading…";
+    authStatus.style.color = "";
+    loadManuscripts(token);
+    loadConferences(token);
+  }
 
+  function escapeHtml(str) {
+    var div = document.createElement("div");
+    div.textContent = str || "";
+    return div.innerHTML;
+  }
+
+  // ---------- Manuscripts ----------
+  function loadManuscripts(token) {
     fetch("/api/admin/manuscripts?token=" + encodeURIComponent(token))
       .then(function (r) {
         if (r.status === 401) throw new Error("Invalid token.");
@@ -71,22 +161,22 @@
         return r.json();
       })
       .then(function (items) {
-        authStatus.textContent = items.length + " submission(s).";
-        renderQueue(items, token);
+        authStatus.textContent = "Token OK.";
+        renderManuscripts(items, token);
       })
       .catch(function (err) {
         authStatus.textContent = err.message;
         authStatus.style.color = "var(--red-700)";
-        queueEl.innerHTML = "";
+        manuscriptQueueEl.innerHTML = "";
       });
   }
 
-  function renderQueue(items, token) {
+  function renderManuscripts(items, token) {
     if (!items.length) {
-      queueEl.innerHTML = '<p style="color:var(--ink-soft);">No submissions yet.</p>';
+      manuscriptQueueEl.innerHTML = '<p style="color:var(--ink-soft);">No submissions yet.</p>';
       return;
     }
-    queueEl.innerHTML = "";
+    manuscriptQueueEl.innerHTML = "";
     items.forEach(function (m) {
       var card = document.createElement("div");
       card.className = "card";
@@ -104,29 +194,139 @@
         "<button class=\"btn btn-primary btn-sm\" data-action=\"approved\">Approve</button>" +
         "<button class=\"btn btn-outline btn-sm\" data-action=\"rejected\">Reject</button>" +
         "</div>";
-
       card.querySelectorAll("button[data-action]").forEach(function (btn) {
         btn.addEventListener("click", function () {
-          setStatus(m.id, btn.getAttribute("data-action"), token);
+          fetch("/api/admin/manuscripts?token=" + encodeURIComponent(token), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: m.id, status: btn.getAttribute("data-action") }),
+          }).then(function () { loadManuscripts(token); });
         });
       });
-      queueEl.appendChild(card);
+      manuscriptQueueEl.appendChild(card);
     });
   }
 
-  function setStatus(id, status, token) {
-    fetch("/api/admin/manuscripts?token=" + encodeURIComponent(token), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: id, status: status }),
-    }).then(load);
+  // ---------- Conferences ----------
+  var confForm = document.getElementById("conf-form");
+  var confIdEl = document.getElementById("conf-id");
+  var confFormTitle = document.getElementById("conf-form-title");
+  var confSubmitBtn = document.getElementById("conf-submit-btn");
+  var confCancelBtn = document.getElementById("conf-cancel-btn");
+  var confFormStatus = document.getElementById("conf-form-status");
+  var fields = ["edition", "title", "start", "end", "venue", "description", "image", "sort"];
+
+  function fieldEl(name) { return document.getElementById("conf-" + name); }
+
+  function resetConfForm() {
+    confIdEl.value = "";
+    confForm.reset();
+    fieldEl("sort").value = "0";
+    confFormTitle.textContent = "Add a Conference";
+    confSubmitBtn.textContent = "Add Conference";
+    confCancelBtn.style.display = "none";
   }
 
-  function escapeHtml(str) {
-    var div = document.createElement("div");
-    div.textContent = str || "";
-    return div.innerHTML;
+  confCancelBtn.addEventListener("click", resetConfForm);
+
+  function loadConferences(token) {
+    fetch("/api/admin/conferences?token=" + encodeURIComponent(token))
+      .then(function (r) { return r.json(); })
+      .then(function (items) { renderConferences(items, token); })
+      .catch(function () {
+        conferenceListEl.innerHTML = '<p style="color:var(--ink-soft);">Couldn\'t load conferences.</p>';
+      });
   }
+
+  function renderConferences(items, token) {
+    if (!items.length) {
+      conferenceListEl.innerHTML = '<p style="color:var(--ink-soft);">No conferences yet.</p>';
+      return;
+    }
+    conferenceListEl.innerHTML = "";
+    items.forEach(function (c) {
+      var card = document.createElement("div");
+      card.className = "card";
+      card.style.marginBottom = "14px";
+      card.innerHTML =
+        "<span class=\"tl-tag\">" + escapeHtml(c.edition) + " &middot; priority " + c.sort_order + "</span>" +
+        "<h3 class=\"mt-0\" style=\"font-size:1.05rem;\">" + escapeHtml(c.title) + "</h3>" +
+        "<p class=\"mb-0\" style=\"font-size:0.88rem;color:var(--ink-soft);\">" +
+        escapeHtml([c.start_date, c.end_date].filter(Boolean).join(" – ")) +
+        (c.venue ? " &middot; " + escapeHtml(c.venue) : "") + "</p>" +
+        "<div style=\"display:flex;gap:10px;margin-top:12px;\">" +
+        "<button class=\"btn btn-outline btn-sm\" data-action=\"edit\">Edit</button>" +
+        "<button class=\"btn btn-outline btn-sm\" data-action=\"delete\" style=\"border-color:var(--red-700);color:var(--red-700);\">Delete</button>" +
+        "</div>";
+
+      card.querySelector('[data-action="edit"]').addEventListener("click", function () {
+        confIdEl.value = c.id;
+        fieldEl("edition").value = c.edition || "";
+        fieldEl("title").value = c.title || "";
+        fieldEl("start").value = c.start_date || "";
+        fieldEl("end").value = c.end_date || "";
+        fieldEl("venue").value = c.venue || "";
+        fieldEl("description").value = c.description || "";
+        fieldEl("image").value = c.image_url || "";
+        fieldEl("sort").value = c.sort_order || 0;
+        confFormTitle.textContent = "Edit Conference";
+        confSubmitBtn.textContent = "Save Changes";
+        confCancelBtn.style.display = "inline-flex";
+        window.scrollTo({ top: confForm.getBoundingClientRect().top + window.scrollY - 100, behavior: "smooth" });
+      });
+
+      card.querySelector('[data-action="delete"]').addEventListener("click", function () {
+        if (!confirm("Delete \"" + c.title + "\"? This cannot be undone.")) return;
+        fetch("/api/admin/conferences/" + c.id + "?token=" + encodeURIComponent(token), { method: "DELETE" })
+          .then(function () { loadConferences(token); });
+      });
+
+      conferenceListEl.appendChild(card);
+    });
+  }
+
+  confForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var token = tokenInput.value.trim();
+    if (!token) return;
+
+    var body = {
+      edition: fieldEl("edition").value.trim(),
+      title: fieldEl("title").value.trim(),
+      start_date: fieldEl("start").value.trim(),
+      end_date: fieldEl("end").value.trim(),
+      venue: fieldEl("venue").value.trim(),
+      description: fieldEl("description").value.trim(),
+      image_url: fieldEl("image").value.trim(),
+      sort_order: parseInt(fieldEl("sort").value, 10) || 0,
+    };
+
+    var id = confIdEl.value;
+    var url = id
+      ? "/api/admin/conferences/" + id + "?token=" + encodeURIComponent(token)
+      : "/api/admin/conferences?token=" + encodeURIComponent(token);
+    var method = id ? "PATCH" : "POST";
+
+    confFormStatus.textContent = "Saving…";
+    fetch(url, {
+      method: method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    })
+      .then(function (r) {
+        if (!r.ok) throw new Error("Save failed.");
+        return r.json();
+      })
+      .then(function () {
+        confFormStatus.textContent = "Saved.";
+        resetConfForm();
+        loadConferences(token);
+      })
+      .catch(function (err) {
+        confFormStatus.textContent = err.message;
+        confFormStatus.style.color = "var(--red-700)";
+      });
+  });
 })();
 </script>
 </body>

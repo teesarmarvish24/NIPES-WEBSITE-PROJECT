@@ -1,41 +1,21 @@
--- AMSO manuscript archive schema.
--- Run this once against your D1 database (dashboard: D1 > your database > Console)
--- after creating it, before the archive page will work.
+-- Run this once in the D1 Console (you already ran schema.sql earlier for
+-- the manuscripts table — this just adds the new conferences table on top).
 
-CREATE TABLE IF NOT EXISTS manuscripts (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  title TEXT NOT NULL,
-  authors TEXT NOT NULL,
-  email TEXT NOT NULL,
-  conference TEXT,
-  abstract TEXT,
-  file_key TEXT NOT NULL,
-  file_name TEXT NOT NULL,
-  status TEXT NOT NULL DEFAULT 'pending', -- 'pending' | 'approved' | 'rejected'
-  submitted_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-
-CREATE INDEX IF NOT EXISTS idx_manuscripts_status ON manuscripts (status);
-
--- Conference archive, editable from admin.html without touching code.
 CREATE TABLE IF NOT EXISTS conferences (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  edition TEXT NOT NULL,       -- e.g. "ICMSO 2023 · 10th Annual"
-  title TEXT NOT NULL,         -- theme, e.g. "Digitized Economy: Challenges..."
-  start_date TEXT,             -- free text, e.g. "28 August 2023"
-  end_date TEXT,                -- free text, e.g. "2 September 2023"
+  edition TEXT NOT NULL,
+  title TEXT NOT NULL,
+  start_date TEXT,
+  end_date TEXT,
   venue TEXT,
   description TEXT,
-  image_url TEXT,               -- optional, e.g. assets/img/icmso2023-flyer.jpg
-  sort_order INTEGER NOT NULL DEFAULT 0, -- higher = shown first / as "latest"
+  image_url TEXT,
+  sort_order INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
 CREATE INDEX IF NOT EXISTS idx_conferences_sort ON conferences (sort_order DESC);
 
--- One-time seed of the existing conference history so nothing is lost when
--- the archive page switches from hardcoded HTML to this table. Run this
--- once, right after creating the table above.
 INSERT INTO conferences (edition, title, start_date, end_date, venue, description, image_url, sort_order) VALUES
 ('ICMSO 2023 · 10th Annual', 'Digitized Economy: Challenges and the Imperatives of Mathematical Tools', '28 August 2023', '2 September 2023', 'University of Lagos (physical & virtual)', 'Keynote: "Facial Recognition Systems with Applications to Digitized Financial Transactions" — Prof. G. Degla. Tracks: Pure Mathematics, Applied Mathematics, Statistics & Applications. Hands-on training: Python & LaTeX. Registration: ₦20,000 (early) / ₦25,000 (at venue) local · $100 international physical / $50 international virtual · 50% student discount.', 'assets/img/icmso2023-flyer.jpg', 100),
 ('ICMSO 2022 · 9th Annual', 'Financial and Digital Inclusion in Emerging Economies: Mathematical Tools and Enabling Technologies', '2 May 2022', '6 May 2022', 'IMSP, Université d''Abomey-Calavi, Porto-Novo, Benin Republic', 'Tracks: Computational Fluid Dynamics · Computational Optimization · Financial Mathematics & Applied Statistics · Mathematical Analysis & Optimization. Hands-on training in R and LaTeX. Co-hosted with IMSP Benin — AMSO''s first conference outside Nigeria.', NULL, 90),
