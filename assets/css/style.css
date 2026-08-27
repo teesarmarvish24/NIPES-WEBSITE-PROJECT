@@ -452,6 +452,43 @@ td.num { font-weight: 700; color: var(--navy-800); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
 }
 
+/* ---- Form fields ---- */
+.field-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--navy-800);
+  margin-bottom: 6px;
+}
+.field-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: var(--paper);
+  color: var(--ink);
+}
+.field-input:focus {
+  outline: 2px solid var(--gold-500);
+  outline-offset: 1px;
+}
+
+/* ---- Archive cards ---- */
+.archive-item {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+}
+.archive-item h4 { margin: 0 0 4px; font-size: 1rem; color: var(--navy-900); }
+.archive-item .meta { font-size: 0.82rem; color: var(--ink-soft); margin-bottom: 10px; }
+.archive-item .status-msg { font-size: 0.9rem; }
+.status-msg.error { color: var(--red-700); }
+.status-msg.success { color: #1e7a3c; }
+
 /* ---- Utility ---- */
 .text-center { text-align: center; }
 .mt-0 { margin-top: 0; }

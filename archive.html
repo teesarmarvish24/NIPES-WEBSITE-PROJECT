@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IJMSOTA Journal | AMSO</title>
-<meta name="description" content="The International Journal of Mathematics Sciences and Optimization: Theory and Applications (IJMSOTA) — AMSO's peer-reviewed publication for mathematical analysis, optimization and statistics research.">
+<title>Manuscript Archive | AMSO</title>
+<meta name="description" content="Submit a manuscript to AMSO and browse previously approved submissions from the conference and journal archive.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230a2540%22/><text x=%2250%22 y=%2268%22 font-size=%2258%22 text-anchor=%22middle%22 fill=%22%23c9972c%22 font-family=%22Georgia,serif%22>&#8721;</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,57 +37,71 @@
 
 <section class="page-hero">
   <div class="container">
-    <div class="breadcrumb"><a href="index.html">Home</a> / Journal</div>
-    <span class="eyebrow">Publication</span>
-    <h1>International Journal of Mathematics Sciences and Optimization: Theory and Applications</h1>
-    <p>IJMSOTA is AMSO's peer-reviewed outlet for research in mathematical analysis, optimization, statistics and their applications, drawing heavily on papers presented at the annual ICAPTA/ICMSO conference.</p>
+    <div class="breadcrumb"><a href="index.html">Home</a> / Archive</div>
+    <span class="eyebrow">Manuscript Archive</span>
+    <h1>Submit &amp; Browse Manuscripts</h1>
+    <p>Authors can submit a manuscript for review below. Approved submissions appear in the public archive underneath, alongside the paper's title, authors and related conference edition.</p>
   </div>
 </section>
 
 <section class="section">
   <div class="container">
-    <div class="grid grid-2">
+    <div class="grid grid-2" style="align-items:start;">
       <div class="card">
-        <div class="icon">&#128214;</div>
-        <h3>Scope</h3>
-        <p>Pure and applied mathematics, fixed point theory, optimization theory and methods, numerical analysis, operations research, statistics, and mathematical modelling of real-world (industrial, financial, biological and computational) problems.</p>
+        <h3 class="mt-0">Submit a Manuscript</h3>
+        <p style="font-size:0.88rem;">Accepted formats: PDF or Word (.doc/.docx), up to 20MB. Submissions are reviewed by the secretariat before appearing in the public archive.</p>
+        <form id="submit-form" style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <label class="field-label">Manuscript title</label>
+            <input type="text" name="title" required class="field-input">
+          </div>
+          <div>
+            <label class="field-label">Author(s)</label>
+            <input type="text" name="authors" required class="field-input" placeholder="e.g. J. Olaleru, A. Abolarinwa">
+          </div>
+          <div>
+            <label class="field-label">Contact email</label>
+            <input type="email" name="email" required class="field-input">
+          </div>
+          <div>
+            <label class="field-label">Related conference (optional)</label>
+            <select name="conference" class="field-input">
+              <option value="">— Select —</option>
+              <option>ICMSO 2023</option>
+              <option>ICMSO 2022</option>
+              <option>Fractional Calculus 2022</option>
+              <option>ICMSO 2020</option>
+              <option>ICAPTA 2019</option>
+              <option>ICAPTA 2018</option>
+              <option>ICAPTA 2017</option>
+              <option>ICAPTA 2016</option>
+              <option>Not conference-linked</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Abstract (optional)</label>
+            <textarea name="abstract" rows="4" class="field-input" style="resize:vertical;"></textarea>
+          </div>
+          <div>
+            <label class="field-label">File (PDF or Word, max 20MB)</label>
+            <input type="file" name="file" required accept=".pdf,.doc,.docx" class="field-input" style="padding:9px;">
+          </div>
+          <!-- Honeypot: left empty by real visitors, hidden from view -->
+          <div style="position:absolute;left:-9999px;" aria-hidden="true">
+            <label>Website</label>
+            <input type="text" name="website" tabindex="-1" autocomplete="off">
+          </div>
+          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Submit Manuscript</button>
+          <p id="form-status" class="mb-0" style="font-size:0.88rem;"></p>
+        </form>
       </div>
-      <div class="card">
-        <div class="icon">&#9998;</div>
-        <h3>Route to Publication</h3>
-        <p>Abstracts are first submitted for conference presentation (max 350 words, MS Word or LaTeX with PDF). Following presentation and feedback, full papers are submitted for journal-based review and, on acceptance, published in IJMSOTA.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
-<section class="section section--alt">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Submission Guidelines</span>
-      <h2>Preparing Your Paper</h2>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <tr><th>Item</th><th>Requirement</th></tr>
-        <tr><td>Abstract length</td><td>Maximum 350 words</td></tr>
-        <tr><td>Accepted formats</td><td>Microsoft Word and LaTeX, submitted with a PDF copy</td></tr>
-        <tr><td>Review process</td><td>Full papers reviewed after conference presentation and discussion</td></tr>
-        <tr><td>Where to submit</td><td>icapta@unilag.edu.ng (conference-linked submissions)</td></tr>
-      </table>
-    </div>
-    <p class="callout" style="margin-top:20px;">This page summarises what recent conference flyers state about the submission pathway. For current author guidelines, article templates and open-access details, link directly to the IJMSOTA journal site once available, or contact the editorial secretariat below.</p>
-  </div>
-</section>
-
-<section class="section">
-  <div class="container">
-    <div class="cta-banner">
       <div>
-        <h3>Have a manuscript in mind?</h3>
-        <p>Reach the secretariat to discuss submission timelines ahead of the next conference.</p>
+        <h3 class="mt-0">Approved Submissions</h3>
+        <div id="archive-list" class="grid" style="gap:14px;">
+          <p style="color:var(--ink-soft);">Loading archive…</p>
+        </div>
       </div>
-      <a href="contact.html" class="btn btn-primary">Contact the Secretariat</a>
     </div>
   </div>
 </section>
@@ -138,5 +152,6 @@
 </footer>
 
 <script src="assets/js/main.js"></script>
+<script src="assets/js/archive.js"></script>
 </body>
 </html>
