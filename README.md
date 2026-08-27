@@ -70,3 +70,4 @@ Conference history, leadership names and fee schedules were compiled from AMSO/M
 conference flyers (2016–2023). Sections that reference details not yet confirmed
 (e.g. the 1st/2nd/8th conference editions, current officer list, live journal site link)
 are flagged inline with a callout — update these once the secretariat confirms details.
+
